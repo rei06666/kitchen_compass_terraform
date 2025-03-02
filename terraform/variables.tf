@@ -1,3 +1,4 @@
+# variables.tf
 variable "system" {
   description = "システム名"
   type        = string
@@ -11,4 +12,24 @@ variable "env" {
 variable "region" {
   description = "AWS Region"
   type        = string
+}
+
+variable "ami_id" {
+  description = "AMI ID"
+  type        = string
+}
+
+variable "domain_name" {
+  description = "ドメイン名"
+  type        = string
+}
+
+variable "key_name" {
+  description = "キーペア名"
+  type        = string
+}
+
+variable efs_public {
+  description = "EFSをパブリックにするか(ローカルでの作業時)"
+  type        = bool
 }
