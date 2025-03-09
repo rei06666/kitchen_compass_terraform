@@ -28,8 +28,3 @@ variable "key_name" {
   description = "キーペア名"
   type        = string
 }
-
-variable efs_public {
-  description = "EFSをパブリックにするか(ローカルでの作業時)"
-  type        = bool
-}

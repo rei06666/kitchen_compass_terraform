@@ -1,18 +1,24 @@
 # vpc.tf
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
 }
 
 resource "aws_subnet" "public" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.1.0/24"
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "public2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.3.0/24"
   map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "private" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.0.2.0/24"
 }
 
 resource "aws_internet_gateway" "main" {
@@ -30,6 +36,11 @@ resource "aws_route_table" "public" {
 
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public2" {
+  subnet_id      = aws_subnet.public2.id
   route_table_id = aws_route_table.public.id
 }
 
@@ -54,17 +65,11 @@ resource "aws_security_group" "alb" {
 resource "aws_security_group" "ec2" {
   vpc_id = aws_vpc.main.id
 
-  # ingress {
-  #   from_port   = 80
-  #   to_port     = 80
-  #   protocol    = "tcp"
-  #   security_groups = [aws_security_group.alb.id]
-  # }
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb.id]
   }
 
   egress {
@@ -79,9 +84,9 @@ resource "aws_security_group" "efs" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
+    from_port       = 2049
+    to_port         = 2049
+    protocol        = "tcp"
     security_groups = [aws_security_group.ec2.id]
   }
 
@@ -89,7 +94,7 @@ resource "aws_security_group" "efs" {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    cidr_blocks       = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

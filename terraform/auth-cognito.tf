@@ -22,8 +22,8 @@ resource "aws_cognito_user_pool" "main" {
 }
 
 resource "aws_cognito_user_pool_client" "main" {
-  name         = "${var.system}-${var.env}-auth-user-pool-client"
-  user_pool_id = aws_cognito_user_pool.main.id
+  name            = "${var.system}-${var.env}-auth-user-pool-client"
+  user_pool_id    = aws_cognito_user_pool.main.id
   generate_secret = true
   explicit_auth_flows = [
     "ALLOW_USER_PASSWORD_AUTH",
